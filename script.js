@@ -1,67 +1,62 @@
-// Make sure DOM is fully loaded before adding event listeners
-document.addEventListener("DOMContentLoaded", function() {
-    // Choose Folder Button
-    document.getElementById("chooseFolderBtn").addEventListener("click", function() {
-        const folderInput = document.createElement("input");
-        folderInput.type = "file";
-        folderInput.webkitdirectory = true;
-        folderInput.directory = true;
+document.getElementById("downloadBtn").addEventListener("click", async () => {
+  const platform = document.getElementById("platform").value;
+  const url = document.getElementById("url").value;
+  const progressBar = document.getElementById("progressBar");
+  const statusDiv = document.getElementById("status");
+  const downloadResultDiv = document.getElementById("downloadResult");
+  const downloadTitle = document.getElementById("downloadTitle");
+  const downloadLink = document.getElementById("downloadLink");
 
-        folderInput.addEventListener("change", function() {
-            const firstFile = folderInput.files[0];
-            if (firstFile) {
-                const folderPath = firstFile.webkitRelativePath.split("/")[0];
-                document.getElementById("folder").value = folderPath || "";
-            } else {
-                document.getElementById("folder").value = "";
-            }
-        });
+  // Validate URL and platform
+  if (!url) {
+    statusDiv.textContent = "Please enter a video URL.";
+    return;
+  }
 
-        folderInput.click();
+  // Show progress bar
+  progressBar.value = 0;
+  statusDiv.textContent = "Downloading...";
+
+  try {
+    const response = await fetch("http://127.0.0.1:5000/download", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        platform: platform,
+        url: url,
+      }),
     });
 
-    // Download Button
-    document.getElementById("downloadBtn").addEventListener("click", function() {
-        const platform = document.getElementById("platform").value;
-        const url = document.getElementById("url").value;
-        const folder = document.getElementById("folder").value;
+    if (!response.ok) {
+      throw new Error("Network response was not ok.");
+    }
 
-        if (!url || !folder) {
-            alert("Please provide both a video URL and folder name.");
-            return;
-        }
+    const result = await response.json();
+    
+    if (result.status === "success") {
+      downloadTitle.textContent = `Download Complete: ${result.title}`;
+      downloadLink.href = `http://127.0.0.1:5000/downloads/${result.title}`;
+      downloadResultDiv.classList.remove("hidden");
+      statusDiv.textContent = "Download successful!";
+    } else {
+      statusDiv.textContent = result.error || "An unknown error occurred.";
+    }
+  } catch (error) {
+    statusDiv.textContent = `Error: ${error.message}`;
+  } finally {
+    progressBar.value = 100;
+  }
+});
 
-        const data = { platform, url, folder };
+document.getElementById("clearBtn").addEventListener("click", () => {
+  document.getElementById("url").value = "";
+  document.getElementById("status").textContent = "";
+  document.getElementById("downloadResult").classList.add("hidden");
+});
 
-        document.getElementById("status").innerText = "Starting download...";
-        const progressBar = document.getElementById("progressBar");
-        if (progressBar) progressBar.value = 0;
-
-        fetch("http://127.0.0.1:5000/download", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (result.error) {
-                throw new Error(result.error);
-            }
-            document.getElementById("status").innerText = "Download Completed!";
-            if (progressBar) progressBar.value = 100;
-        })
-        .catch(error => {
-            document.getElementById("status").innerText = "Error: " + error.message;
-        });
-    });
-
-    // Clear Button
-    document.getElementById("clearBtn").addEventListener("click", function() {
-        document.getElementById("url").value = "";
-        document.getElementById("folder").value = "";
-        document.getElementById("platform").value = "youtube";
-        document.getElementById("status").innerText = "";
-        const progressBar = document.getElementById("progressBar");
-        if (progressBar) progressBar.value = 0;
-    });
+document.getElementById("chooseFolderBtn").addEventListener("click", () => {
+  // Implement the folder selection feature here
+  alert("Folder selection is not implemented yet.");
 });
