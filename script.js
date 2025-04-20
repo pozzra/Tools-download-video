@@ -25,7 +25,7 @@ document.getElementById("downloadBtn").addEventListener("click", function() {
     const data = { platform, url, folder };
 
     document.getElementById("status").innerText = "Starting download...";
-    document.getElementById("progressBar").value = 0;
+    // document.getElementById("progressBar").value = 0;
 
     fetch("http://127.0.0.1:5000/download", {
         method: "POST",
