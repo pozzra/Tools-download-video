@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -13,52 +13,103 @@
     <title>Video Downloader</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
-    <div class="container">
-      <h1>Video Downloader</h1>
-      <div class="form-group">
-        <label for="platform">Select Platform:</label>
-        <select id="platform">
-          <option value="youtube">YouTube</option>
-          <option value="facebook">Facebook</option>
-          <option value="tiktok">TikTok</option>
-          <option value="instagram">Instagram</option>
-          <option value="kuaishou">Kuaishou</option>
-        </select>
-      </div>
+<body>
+  <h1>Video Downloader</h1>
 
-      <div class="form-group">
-        <label for="url">Video URL:</label>
-        <input type="text" id="url" placeholder="Enter video URL" />
-      </div>
+  <div>
+    <label for="platform">Platform: </label>
+    <select id="platform">
+      <option value="youtube">YouTube</option>
+      <option value="instagram">Instagram</option>
+      <option value="facebook">Facebook</option>
+      <option value="tiktok">TikTok</option>
+      <option value="kuaishou">Kuaishou</option>
+    </select>
+  </div>
 
-      <div class="form-group">
-        <label for="quality">Select Quality:</label>
-        <select id="quality">
-          <option value="720p">720p</option>
-          <option value="1080p">1080p</option>
-          <option value="4k">4K</option>
-        </select>
-      </div>
+  <div>
+    <label for="url">Video URL: </label>
+    <input type="text" id="url" placeholder="Enter video URL">
+  </div>
 
-      <button id="downloadBtn">Download</button>
-      <button id="clearBtn">Clear</button>
+  <div>
+    <button id="downloadBtn">Download</button>
+    <button id="clearBtn">Clear</button>
+  </div>
 
-      <div id="status"></div>
-      <!-- Progress Bar -->
-      <progress id="progressBar" value="0" max="100" style="width: 100%;"></progress>
+  <div id="status"></div>
+  <progress id="progressBar" value="0" max="100"></progress>
 
-      <footer>
-        <p>
-          &copy; <script>document.write(new Date().getFullYear());</script> Video Downloader. All rights reserved.
-        </p>
-        <p>
-          Disclaimer: This tool is for educational purposes only. Please respect copyright laws and the terms of service of the platforms.
-        </p>
-        <p>Developed by <a href="https://pozzra.github.io/about-me/" target="_blank">KUN AMRA</a></p>
-      </footer>
-    </div>
+  <script>
+    document.getElementById("downloadBtn").addEventListener("click", function () {
+      const platform = document.getElementById("platform").value;
+      const url = document.getElementById("url").value;
+      const progressBar = document.getElementById("progressBar");
+      const statusDiv = document.getElementById("status");
 
-    <script src="script.js"></script>
-  </body>
+      if (!url) {
+        alert("Please provide a video URL.");
+        return;
+      }
+
+      const data = { platform, url };
+      statusDiv.innerText = "Starting download...";
+      progressBar.value = 0;
+
+      fetch("https://your-railway-app-name.up.railway.app/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok.");
+        }
+        return response.json();
+      })
+      .then((result) => {
+        if (result.status === "success") {
+          statusDiv.innerText = `Download Completed: ${result.title}`;
+          
+          // 👇 Automatically trigger download
+          const fileName = encodeURIComponent(result.title) + ".mp4"; // or .jpg if photo
+          const downloadUrl = `https://your-railway-app-name.up.railway.app/downloads/${fileName}`;
+
+          const a = document.createElement('a');
+          a.href = downloadUrl;
+          a.download = fileName;
+          a.style.display = 'none';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+
+        } else {
+          statusDiv.innerText = `Error: ${result.error}`;
+        }
+      })
+      .catch((error) => {
+        statusDiv.innerText = "Error: " + error.message;
+        console.error("Error during fetch:", error);
+      });
+
+      // Fake progress bar
+      let progress = 0;
+      const progressInterval = setInterval(() => {
+        if (progress < 100) {
+          progress += 5;
+          progressBar.value = progress;
+        } else {
+          clearInterval(progressInterval);
+        }
+      }, 500);
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", function () {
+      document.getElementById("url").value = "";
+      document.getElementById("platform").value = "youtube";
+      document.getElementById("status").innerText = "";
+      document.getElementById("progressBar").value = 0;
+    });
+  </script>
+</body>
 </html>
