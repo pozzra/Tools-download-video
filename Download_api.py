@@ -21,11 +21,13 @@ class VideoDownloader:
         if not os.path.exists(download_folder):
             os.makedirs(download_folder)
 
-        # Load cookies (ensure you have the cookies.txt file)
+        # Get the path to cookies.txt (set via environment variable in Railway)
+        cookies_path = os.getenv('COOKIES_PATH', 'cookies.txt')  # Default to 'cookies.txt' if not set
+
         ydl_opts = {
             'outtmpl': f'{download_folder}/%(title)s.%(ext)s',
             'format': 'best',
-            'cookiefile': 'cookies.txt',  # Add this line to pass the cookies
+            'cookiefile': cookies_path,  # Add cookies file path
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
