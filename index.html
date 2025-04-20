@@ -3,27 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Download videos from various platforms easily."
-    />
-    <meta
-      name="keywords"
-      content="video downloader, download videos, YouTube, Facebook, TikTok, Instagram, Kuaishou"
-    />
+    <meta name="description" content="Download videos from various platforms easily." />
+    <meta name="keywords" content="video downloader, download videos, YouTube, Facebook, TikTok, Instagram, Kuaishou" />
     <meta name="author" content="KUN AMRA" />
     <meta name="theme-color" content="#4CAF50" />
-    <link
-      rel="icon"
-      href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRI7zr-SI2GlQuKVd8z6DBDnr9msl9Q3C60Q&s"
-      type="image/x-icon"
-    />
-    <link
-      rel="apple-touch-icon"
-      href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRI7zr-SI2GlQuKVd8z6DBDnr9msl9Q3C60Q&s"
-    />
+    <link rel="icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRI7zr-SI2GlQuKVd8z6DBDnr9msl9Q3C60Q&s" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRI7zr-SI2GlQuKVd8z6DBDnr9msl9Q3C60Q&s" />
     <link rel="manifest" href="manifest.json" />
-
     <title>Video Downloader</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -47,44 +33,29 @@
       </div>
 
       <div class="form-group">
-
-        <button id="chooseFolderBtn">Choose Folder</button>
+        <label for="quality">Select Quality:</label>
+        <select id="quality">
+          <option value="720p">720p</option>
+          <option value="1080p">1080p</option>
+          <option value="4k">4K</option>
+        </select>
       </div>
 
       <button id="downloadBtn">Download</button>
       <button id="clearBtn">Clear</button>
+
       <div id="status"></div>
-      <progress
-        id="progressBar"
-        value="0"
-        max="100"
-        style="width: 100%"
-      ></progress>
-      <div id="status"></div>
-      <div id="downloadResult" class="hidden">
-        <h2>Download Successful!</h2>
-        <p id="downloadTitle"></p>
-        <a id="downloadLink" href="#" target="_blank">Click here to download</a>
-      </div>
+      <!-- Progress Bar -->
+      <progress id="progressBar" value="0" max="100" style="width: 100%;"></progress>
+
       <footer>
-        <!-- displays this year -->
         <p>
-          &copy;
-          <script>
-            document.write(new Date().getFullYear());
-          </script>
-          Video Downloader. All rights reserved.
+          &copy; <script>document.write(new Date().getFullYear());</script> Video Downloader. All rights reserved.
         </p>
         <p>
-          Disclaimer: This tool is for educational purposes only. Please respect
-          copyright laws and the terms of service of the platforms.
+          Disclaimer: This tool is for educational purposes only. Please respect copyright laws and the terms of service of the platforms.
         </p>
-        <p>
-          Developed by
-          <a href="https://pozzra.github.io/about-me/" target="_blank"
-            >KUN AMRA</a
-          >
-        </p>
+        <p>Developed by <a href="https://pozzra.github.io/about-me/" target="_blank">KUN AMRA</a></p>
       </footer>
     </div>
 
