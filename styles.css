@@ -1,0 +1,156 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #d1cfcf;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#status {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+#downloadResult {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#downloadResult.hidden {
+    display: none;
+}
+
+#downloadLink {
+    text-decoration: none;
+    color: #007bff;
+}
+
+#downloadLink:hover {
+    text-decoration: underline;
+}
+#downloadBtn {
+    margin-top: -10px;
+}
+#progressContainer {
+
+    margin-top: 20px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+#clearBtn {
+    
+    margin-top: 10px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    
+}
+#clearBtn:hover {
+    background-color: #e53935;
+}
+footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #777;
+}
+#footerLink {
+    color: #007bff;
+    text-decoration: none;
+}
+#footerLink:hover {
+    text-decoration: underline;
+}
+
+@media screen and (max-width: 600px) {
+    .container {
+        width: 90%;
+    }
+    h1 {
+        font-size: 24px;
+    }
+    input, select, button {
+        font-size: 14px;
+    }
+    #status {
+        font-size: 16px;
+    }
+    #downloadResult {
+        font-size: 16px;
+    }
+    
+}
+@media screen and (max-width: 400px) {
+    h1 {
+        font-size: 20px;
+    }
+    input, select, button {
+        font-size: 12px;
+    }
+    #status {
+        font-size: 14px;
+    }
+    #downloadResult {
+        font-size: 14px;
+    }
+}
