@@ -121,8 +121,19 @@
               Your browser does not support the video tag.
             </video>
           `;
+           // 🛠️ Auto download file
+          const a = document.createElement('a');
+          a.href = fileUrl;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+
+          // 🛠️ Auto repeat if needed (optional)
+          setTimeout(() => { startDownload(); }, 500); // Uncomment if you want auto-repeat after 5s
         } else {
           statusDiv.innerText = `Error: ${result.error}`;
+          
         }
       })
       .catch(error => {
