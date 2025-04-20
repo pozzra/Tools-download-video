@@ -1,62 +1,58 @@
-document.getElementById("downloadBtn").addEventListener("click", async () => {
-  const platform = document.getElementById("platform").value;
-  const url = document.getElementById("url").value;
-  const progressBar = document.getElementById("progressBar");
-  const statusDiv = document.getElementById("status");
-  const downloadResultDiv = document.getElementById("downloadResult");
-  const downloadTitle = document.getElementById("downloadTitle");
-  const downloadLink = document.getElementById("downloadLink");
+  document.getElementById("downloadBtn").addEventListener("click", function () {
+        const platform = document.getElementById("platform").value;
+        const url = document.getElementById("url").value;
+        const quality = document.getElementById("quality").value;
+        const progressBar = document.getElementById("progressBar");
+        const statusDiv = document.getElementById("status");
 
-  // Validate URL and platform
-  if (!url) {
-    statusDiv.textContent = "Please enter a video URL.";
-    return;
-  }
+        if (!url) {
+          alert("Please provide a video URL.");
+          return;
+        }
 
-  // Show progress bar
-  progressBar.value = 0;
-  statusDiv.textContent = "Downloading...";
+        const data = { platform, url, quality };
 
-  try {
-    const response = await fetch("http://127.0.0.1:5000/download", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        platform: platform,
-        url: url,
-      }),
-    });
+        statusDiv.innerText = "Starting download...";
+        progressBar.value = 0; // Reset progress bar
 
-    if (!response.ok) {
-      throw new Error("Network response was not ok.");
-    }
+        fetch("http://127.0.0.1:5000/download", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok.");
+            }
+            return response.json();
+          })
+          .then((result) => {
+            if (result.status === "success") {
+              statusDiv.innerText = `Download Completed: ${result.title}`;
+            } else {
+              statusDiv.innerText = `Error: ${result.error}`;
+            }
+          })
+          .catch((error) => {
+            statusDiv.innerText = "Error: " + error.message;
+            console.error("Error during fetch:", error);
+          });
 
-    const result = await response.json();
-    
-    if (result.status === "success") {
-      downloadTitle.textContent = `Download Complete: ${result.title}`;
-      downloadLink.href = `http://127.0.0.1:5000/downloads/${result.title}`;
-      downloadResultDiv.classList.remove("hidden");
-      statusDiv.textContent = "Download successful!";
-    } else {
-      statusDiv.textContent = result.error || "An unknown error occurred.";
-    }
-  } catch (error) {
-    statusDiv.textContent = `Error: ${error.message}`;
-  } finally {
-    progressBar.value = 100;
-  }
-});
+        // Simulating download progress (this part would depend on your backend sending real-time progress)
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+          if (progress < 100) {
+            progress += 5;
+            progressBar.value = progress;
+          } else {
+            clearInterval(progressInterval);
+          }
+        }, 500); // Update every 500ms
+      });
 
-document.getElementById("clearBtn").addEventListener("click", () => {
-  document.getElementById("url").value = "";
-  document.getElementById("status").textContent = "";
-  document.getElementById("downloadResult").classList.add("hidden");
-});
-
-document.getElementById("chooseFolderBtn").addEventListener("click", () => {
-  // Implement the folder selection feature here
-  alert("Folder selection is not implemented yet.");
-});
+      document.getElementById("clearBtn").addEventListener("click", function () {
+        document.getElementById("url").value = "";
+        document.getElementById("platform").value = "youtube";
+        document.getElementById("status").innerText = "";
+        document.getElementById("progressBar").value = 0;
+      });
