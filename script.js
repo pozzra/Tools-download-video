@@ -74,3 +74,4 @@ document.getElementById("clearBtn").addEventListener("click", function() {
     document.getElementById("progressBar").value = 0;
 }
 );
+document.getElementById("folderName").value = selectedFolder;
