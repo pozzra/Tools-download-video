@@ -5,8 +5,8 @@ document.getElementById("chooseFolderBtn").addEventListener("click", function() 
     folderInput.directory = true;
 
     folderInput.addEventListener("change", function() {
-        const folderPath = folderInput.files[0].webkitRelativePath.split("/")[0];
-        document.getElementById("folder").value = folderPath;
+        const folderPath = folderInput.files[0]?.webkitRelativePath.split("/")[0];
+        document.getElementById("folder").value = folderPath || "";
     });
 
     folderInput.click();
@@ -22,47 +22,26 @@ document.getElementById("downloadBtn").addEventListener("click", function() {
         return;
     }
 
-    const data = {
-        platform: platform,
-        url: url,
-        folder: folder
-    };
+    const data = { platform, url, folder };
 
-    document.getElementById("status").innerText = "Downloading...";
+    document.getElementById("status").innerText = "Starting download...";
     document.getElementById("progressBar").value = 0;
 
     fetch("http://127.0.0.1:5000/download", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Download failed");
+    .then(response => response.json())
+    .then(result => {
+        if (result.error) {
+            throw new Error(result.error);
         }
-
-        // Create a new EventSource to listen for the progress updates
-        const eventSource = new EventSource("http://127.0.0.1:5000/download");
-        
-        eventSource.onmessage = function(event) {
-            const progress = parseInt(event.data, 10);
-            document.getElementById("progressBar").value = progress;
-            document.getElementById("status").innerText = `Downloading... ${progress}%`;
-
-            if (progress === 100) {
-                eventSource.close();
-                document.getElementById("status").innerText = "Download Completed!";
-            }
-        };
-
-        eventSource.onerror = function() {
-            document.getElementById("status").innerText = "Error during download.";
-        };
+        document.getElementById("status").innerText = "Download Completed!";
+        document.getElementById("progressBar").value = 100;
     })
     .catch(error => {
-        document.getElementById("status").innerText = "Error: " + error;
+        document.getElementById("status").innerText = "Error: " + error.message;
     });
 });
 
@@ -72,6 +51,4 @@ document.getElementById("clearBtn").addEventListener("click", function() {
     document.getElementById("platform").value = "youtube";
     document.getElementById("status").innerText = "";
     document.getElementById("progressBar").value = 0;
-}
-);
-document.getElementById("folderName").value = selectedFolder;
+});
