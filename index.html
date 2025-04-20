@@ -75,7 +75,7 @@
       statusDiv.innerText = "Starting download...";
       progressBar.value = 0;
 
-      fetch("http://127.0.0.1:5000/download", {
+      fetch("https://web-production-4bbff.up.railway.app/download", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
