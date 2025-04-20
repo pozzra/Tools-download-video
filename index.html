@@ -11,13 +11,14 @@
   <link rel="apple-touch-icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRI7zr-SI2GlQuKVd8z6DBDnr9msl9Q3C60Q&s" />
   <link rel="manifest" href="manifest.json" />
   <title>Video Downloader</title>
-  <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css" />
+
 </head>
 
 <body>
   <div class="container">
     <h1>Video Downloader</h1>
-    
+
     <div class="form-group">
       <label for="platform">Select Platform:</label>
       <select id="platform">
@@ -44,11 +45,13 @@
     </div>
 
     <button id="downloadBtn">Download</button>
-    <button id="clearBtn">Clear</button>
+    <button id="clearBtn" style="background-color: #f44336;">Clear</button>
 
+    <div id="spinner"></div>
     <div id="status"></div>
+    <progress id="progressBar" value="0" max="100" style="width: 100%; margin-top: 10px;"></progress>
 
-    <progress id="progressBar" value="0" max="100" style="width: 100%;"></progress>
+    <div id="videoPreview"></div>
 
     <footer>
       <p>&copy; <script>document.write(new Date().getFullYear());</script> Video Downloader. All rights reserved.</p>
@@ -58,12 +61,20 @@
   </div>
 
   <script>
-    document.getElementById("downloadBtn").addEventListener("click", function () {
+    const downloadBtn = document.getElementById("downloadBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const statusDiv = document.getElementById("status");
+    const progressBar = document.getElementById("progressBar");
+    const videoPreview = document.getElementById("videoPreview");
+    const spinner = document.getElementById("spinner");
+
+    downloadBtn.addEventListener("click", startDownload);
+    clearBtn.addEventListener("click", clearForm);
+
+    function startDownload() {
       const platform = document.getElementById("platform").value;
-      const url = document.getElementById("url").value;
+      const url = document.getElementById("url").value.trim();
       const quality = document.getElementById("quality").value;
-      const progressBar = document.getElementById("progressBar");
-      const statusDiv = document.getElementById("status");
 
       if (!url) {
         alert("Please provide a video URL.");
@@ -71,9 +82,10 @@
       }
 
       const data = { platform, url, quality };
-
-      statusDiv.innerText = "Starting download...";
       progressBar.value = 0;
+      statusDiv.innerText = "";
+      videoPreview.innerHTML = "";
+      spinner.style.display = "block";
 
       fetch("https://web-production-4bbff.up.railway.app/download", {
         method: "POST",
@@ -87,13 +99,14 @@
         return response.json();
       })
       .then(result => {
+        spinner.style.display = "none";
         if (result.status === "success") {
           statusDiv.innerText = `Download Completed: ${result.title}`;
-          
-          // 🛠️ Auto download file
-          const fileName = encodeURIComponent(result.title) + ".mp4"; // or ".jpg" if it's a photo
-          const downloadUrl = `http://web-production-4bbff.up.railway.app/downloads/${fileName}`; // 🛠️ Correct URL to access file
 
+          const fileName = encodeURIComponent(result.title) + ".mp4";
+          const downloadUrl = `https://web-production-4bbff.up.railway.app/downloads/${fileName}`;
+
+          // Auto download
           const a = document.createElement('a');
           a.href = downloadUrl;
           a.download = fileName;
@@ -101,33 +114,44 @@
           a.click();
           document.body.removeChild(a);
 
+          // Auto show video
+          videoPreview.innerHTML = `
+            <video controls autoplay>
+              <source src="${downloadUrl}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          `;
         } else {
           statusDiv.innerText = `Error: ${result.error}`;
         }
       })
       .catch(error => {
+        spinner.style.display = "none";
         statusDiv.innerText = "Error: " + error.message;
         console.error("Error during fetch:", error);
       });
 
-      // Fake progress bar (can be replaced with real progress from backend)
+      // Fake progress bar
       let progress = 0;
-      const progressInterval = setInterval(() => {
+      const interval = setInterval(() => {
         if (progress < 100) {
           progress += 5;
           progressBar.value = progress;
         } else {
-          clearInterval(progressInterval);
+          clearInterval(interval);
         }
-      }, 500);
-    });
+      }, 400);
+    }
 
-    document.getElementById("clearBtn").addEventListener("click", function () {
+    function clearForm() {
       document.getElementById("url").value = "";
       document.getElementById("platform").value = "youtube";
-      document.getElementById("status").innerText = "";
-      document.getElementById("progressBar").value = 0;
-    });
+      document.getElementById("quality").value = "720p";
+      statusDiv.innerText = "";
+      progressBar.value = 0;
+      videoPreview.innerHTML = "";
+      spinner.style.display = "none";
+    }
   </script>
 </body>
 </html>
