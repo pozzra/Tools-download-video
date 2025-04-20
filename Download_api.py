@@ -70,9 +70,12 @@ def download_video():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+from flask import send_from_directory
+
 @app.route('/downloads/<filename>')
 def download_file(filename):
-    return send_from_directory(output_folder, filename)
+    return send_from_directory('downloads', filename)
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
