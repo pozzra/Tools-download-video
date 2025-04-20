@@ -67,7 +67,8 @@
     const progressBar = document.getElementById("progressBar");
     const videoPreview = document.getElementById("videoPreview");
     const spinner = document.getElementById("spinner");
-
+    const a = document.createElement('a');
+    
     downloadBtn.addEventListener("click", startDownload);
     clearBtn.addEventListener("click", clearForm);
 
@@ -122,7 +123,6 @@
             </video>
           `;
            // 🛠️ Auto download file
-          const a = document.createElement('a');
           a.href = fileUrl;
           a.download = fileName;
           document.body.appendChild(a);
