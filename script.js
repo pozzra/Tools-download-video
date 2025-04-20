@@ -15,7 +15,7 @@
         statusDiv.innerText = "Starting download...";
         progressBar.value = 0; // Reset progress bar
 
-        fetch("http://127.0.0.1:8080/download", {
+        fetch("http://127.0.0.1:5000/download", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
